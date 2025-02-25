@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Consultar Pendências - Sistema de Controle de Pendências{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Pendências</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-list-check me-2"></i>Consultar Pendências</h2>
+            <a href="{{ url_for('cadastrar_pendencia') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Nova Pendência
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Filtros</h5>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('consultar_pendencias', status='todas') }}" 
+                           class="btn btn-outline-secondary {{ 'active' if filtro_status == 'todas' else '' }}">
+                            Todas
+                        </a>
+                        <a href="{{ url_for('consultar_pendencias', status='pendentes') }}" 
+                           class="btn btn-outline-warning {{ 'active' if filtro_status == 'pendentes' else '' }}">
+                            Pendentes
+                        </a>
+                        <a href="{{ url_for('consultar_pendencias', status='concluidas') }}" 
+                           class="btn btn-outline-success {{ 'active' if filtro_status == 'concluidas' else '' }}">
+                            Concluídas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% if pendencias %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Descrição</th>
+                                <th>Responsável</th>
+                                <th>Data Cadastro</th>
+                                <th>Prazo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pendencia in pendencias %}
+                            <tr>
+                                <td>{{ pendencia.id }}</td>
+                                <td>{{ pendencia.descricao|truncate(50) }}</td>
+                                <td>
+                                    {% if pendencia.responsavel %}
+                                        {{ pendencia.responsavel.nome }}
+                                    {% else %}
+                                        <span class="text-muted">Não definido</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ pendencia.data_cadastro|format_date }}</td>
+                                <td>
+                                    {% if pendencia.data_prazo %}
+                                    {{ pendencia.data_prazo|format_date }}
+                                    {% else %}
+                                    <span class="text-muted">---</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if pendencia.concluida %}
+                                    <span class="badge bg-success">Concluída</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Pendente</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('detalhe_pendencia', id=pendencia.id) }}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    {% if not pendencia.concluida %}
+                                    <a href="{{ url_for('enviar_lembrete', id=pendencia.id) }}" class="btn btn-sm btn-outline-success me-1">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </a>
+                                    <a href="{{ url_for('concluir_pendencia', id=pendencia.id) }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Não foram encontradas pendências com os filtros selecionados.
+                    {% if filtro_status != 'todas' %}
+                    <a href="{{ url_for('consultar_pendencias', status='todas') }}">Ver todas as pendências</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

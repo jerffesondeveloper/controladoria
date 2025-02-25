@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Pessoa - Sistema de Controle de Pendências{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('listar_pessoas') }}">Pessoas</a></li>
+                <li class="breadcrumb-item active">Cadastrar Pessoa</li>
+            </ol>
+        </nav>
+        
+        <h2 class="mb-4"><i class="fas fa-user-plus me-2"></i>Cadastrar Pessoa</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('cadastrar_pessoa') }}">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome Completo*</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="secretaria" class="form-label">Secretaria/Departamento*</label>
+                        <input type="text" class="form-control" id="secretaria" name="secretaria" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone WhatsApp*</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-whatsapp text-success"></i></span>
+                            <input type="text" class="form-control" id="telefone" name="telefone" 
+                                   placeholder="(11) 99999-9999" required>
+                        </div>
+                        <div class="form-text">
+                            Digite o número com DDD, será usado para enviar notificações via WhatsApp.
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Salvar
+                        </button>
+                        <a href="{{ url_for('listar_pessoas') }}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-info-circle me-2 text-primary"></i>Informações</h5>
+                <p>
+                    Cadastre os dados da pessoa responsável por atender pendências.
+                    O número de WhatsApp será utilizado para enviar notificações automaticamente.
+                </p>
+                <hr>
+                <h6><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Importante:</h6>
+                <ul class="small">
+                    <li>O nome será exibido nos relatórios e notificações</li>
+                    <li>Verifique se o número do WhatsApp está correto</li>
+                    <li>Certifique-se que o número informado recebe mensagens</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    $(document).ready(function() {
+        // Máscara para o telefone
+        $("#telefone").on("input", function() {
+            const value = $(this).val().replace(/\D/g, '');
+            let formatted = '';
+            
+            if (value.length <= 2) {
+                formatted = value;
+            } else if (value.length <= 6) {
+                formatted = `(${value.substring(0, 2)}) ${value.substring(2)}`;
+            } else if (value.length <= 10) {
+                formatted = `(${value.substring(0, 2)}) ${value.substring(2, 6)}-${value.substring(6)}`;
+            } else {
+                formatted = `(${value.substring(0, 2)}) ${value.substring(2, 7)}-${value.substring(7, 11)}`;
+            }
+            
+            $(this).val(formatted);
+        });
+    });
+</script>
+{% endblock %}
