@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Pessoas Cadastradas - Sistema de Controle de Pendências{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Pessoas</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-users me-2"></i>Pessoas Cadastradas</h2>
+            <a href="{{ url_for('cadastrar_pessoa') }}" class="btn btn-primary">
+                <i class="fas fa-user-plus me-2"></i>Nova Pessoa
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% if pessoas %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Secretaria</th>
+                                <th>Telefone</th>
+                                <th>Data Cadastro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pessoa in pessoas %}
+                            <tr>
+                                <td>{{ pessoa.nome }}</td>
+                                <td>{{ pessoa.secretaria }}</td>
+                                <td><i class="fab fa-whatsapp text-success me-1"></i> {{ pessoa.telefone }}</td>
+                                <td>{{ pessoa.data_cadastro|format_date }}</td>
+                                <td>
+                                    <a href="{{ url_for('editar_pessoa', id=pessoa.id) }}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Não há pessoas cadastradas. <a href="{{ url_for('cadastrar_pessoa') }}">Cadastre agora</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

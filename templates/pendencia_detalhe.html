@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes da Pendência - Sistema de Controle de Pendências{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('consultar_pendencias') }}">Pendências</a></li>
+                <li class="breadcrumb-item active">Detalhes</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-clipboard-list me-2"></i>Detalhes da Pendência #{{ pendencia.id }}</h2>
+            <div>
+                <a href="{{ url_for('consultar_pendencias') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Informações da Pendência</h5>
+                <span class="badge {{ 'bg-success' if pendencia.concluida else 'bg-warning' }} px-3 py-2">
+                    {{ 'Concluída' if pendencia.concluida else 'Pendente' }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Data de Cadastro</h6>
+                        <p>{{ pendencia.data_cadastro|format_datetime }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Prazo</h6>
+                        <p>
+                            {% if pendencia.data_prazo %}
+                            {{ pendencia.data_prazo|format_date }}
+                            {% else %}
+                            <span class="text-muted">Não definido</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Responsável</h6>
+                        <p>
+                            <strong>{{ pendencia.responsavel.nome }}</strong><br>
+                            <small class="text-muted">{{ pendencia.responsavel.secretaria }}</small>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Contato</h6>
+                        <p>
+                            <i class="fab fa-whatsapp text-success me-1"></i>
+                            {{ pendencia.responsavel.telefone }}
+                        </p>
+                    </div>
+                </div>
+                
+                <h6 class="text-muted">Descrição</h6>
+                <div class="p-3 bg-light rounded">
+                    <p class="mb-0">{{ pendencia.descricao }}</p>
+                </div>
+                
+                {% if pendencia.concluida and pendencia.data_conclusao %}
+                <div class="alert alert-success mt-3">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Pendência concluída em:</strong> {{ pendencia.data_conclusao|format_datetime }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <div class="d-flex gap-2">
+                    {% if not pendencia.concluida %}
+                    <a href="{{ url_for('concluir_pendencia', id=pendencia.id) }}" class="btn btn-success">
+                        <i class="fas fa-check me-2"></i>Marcar como Concluída
+                    </a>
+                    <a href="{{ url_for('enviar_lembrete', id=pendencia.id) }}" class="btn btn-primary">
+                        <i class="fab fa-whatsapp me-2"></i>Enviar Lembrete
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Histórico de Mensagens -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Histórico de Notificações</h5>
+            </div>
+            <div class="card-body">
+                {% if mensagens %}
+                <div class="list-group">
+                    {% for mensagem in mensagens %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between mb-1">
+                            <h6 class="mb-1">
+                                <i class="fab fa-whatsapp text-success me-1"></i>
+                                Mensagem WhatsApp
+                            </h6>
+                            <small>{{ mensagem.data_envio|format_datetime }}</small>
+                        </div>
+                        <p class="mb-1 small">{{ mensagem.conteudo|replace('\n', '<br>')|safe }}</p>
+                        <small class="text-muted">
+                            Status: 
+                            {% if mensagem.status_envio == 'enviado' %}
+                            <span class="text-success">Enviado</span>
+                            {% else %}
+                            <span class="text-danger">Falha no envio</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Nenhuma notificação foi enviada para esta pendência ainda.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Card de ações rápidas -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Ações Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if not pendencia.concluida %}
+                    <a href="{{ url_for('concluir_pendencia', id=pendencia.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-check-circle text-success fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Marcar como Concluída</h6>
+                                <small>Finalizar esta pendência</small>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('enviar_lembrete', id=pendencia.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 align-items-center">
+                            <div class="me-3">
+                                <i class="fab fa-whatsapp text-success fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Enviar Lembrete</h6>
+                                <small>Notificar o responsável via WhatsApp</small>
+                            </div>
+                        </div>
+                    </a>
+                    {% else %}
+                    <div class="list-group-item disabled">
+                        <div class="d-flex w-100 align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-check-double text-muted fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Pendência Concluída</h6>
+                                <small>Esta pendência já foi finalizada</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <a href="{{ url_for('consultar_pendencias') }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-list-check text-primary fa-2x"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Ver Todas Pendências</h6>
+                                <small>Voltar para a lista de pendências</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card de informações adicionais -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Informações</h5>
+            </div>
+            <div class="card-body">
+                <p class="small">
+                    <i class="fas fa-info-circle text-primary me-2"></i>
+                    Esta tela permite gerenciar todos os detalhes da pendência, incluindo o envio de lembretes e 
+                    a marcação de conclusão.
+                </p>
+                <hr>
+                <h6><i class="fas fa-bell text-warning me-2"></i>Lembretes:</h6>
+                <ul class="small">
+                    <li>Os lembretes são enviados via WhatsApp para o número do responsável</li>
+                    <li>O sistema manterá um histórico de todas as mensagens enviadas</li>
+                    <li>Você pode enviar quantos lembretes forem necessários</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

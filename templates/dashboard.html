@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistema de Controle de Pendências{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-plus-circle fa-4x text-primary mb-3"></i>
+                <h5 class="card-title">Cadastrar Pendência</h5>
+                <p class="card-text">Registre novas pendências e atribua aos responsáveis.</p>
+                <a href="{{ url_for('cadastrar_pendencia') }}" class="btn btn-primary mt-2">
+                    <i class="fas fa-plus me-2"></i>Cadastrar
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-list-check fa-4x text-success mb-3"></i>
+                <h5 class="card-title">Consultar Pendências</h5>
+                <p class="card-text">Visualize, acompanhe e atualize o status das pendências.</p>
+                <a href="{{ url_for('consultar_pendencias') }}" class="btn btn-success mt-2">
+                    <i class="fas fa-search me-2"></i>Consultar
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-users fa-4x text-info mb-3"></i>
+                <h5 class="card-title">Cadastrar Pessoas</h5>
+                <p class="card-text">Gerenciar responsáveis para atribuição de pendências.</p>
+                <a href="{{ url_for('cadastrar_pessoa') }}" class="btn btn-info mt-2 text-white">
+                    <i class="fas fa-user-plus me-2"></i>Cadastrar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Informações do Sistema</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-info-circle me-2"></i>Sobre o Sistema</h6>
+                        <p>
+                            Este sistema foi desenvolvido para facilitar o gerenciamento 
+                            de pendências da Controladoria, permitindo o cadastro, 
+                            acompanhamento e envio de notificações aos responsáveis.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-question-circle me-2"></i>Como Usar</h6>
+                        <ul>
+                            <li>Cadastre pessoas/responsáveis com seus contatos</li>
+                            <li>Registre pendências associadas aos responsáveis</li>
+                            <li>Envie lembretes via WhatsApp quando necessário</li>
+                            <li>Marque as pendências como concluídas após finalização</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+            
+                    

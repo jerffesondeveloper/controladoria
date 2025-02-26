@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Pendência - Sistema de Controle de Pendências{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('consultar_pendencias') }}">Pendências</a></li>
+                <li class="breadcrumb-item active">Cadastrar Pendência</li>
+            </ol>
+        </nav>
+        
+        <h2 class="mb-4"><i class="fas fa-plus-circle me-2"></i>Cadastrar Nova Pendência</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                {% if pessoas %}
+                <form method="POST" action="{{ url_for('cadastrar_pendencia') }}">
+                    <div class="mb-3">
+                        <label for="pessoa_id" class="form-label">Responsável*</label>
+                        <select class="form-select" id="pessoa_id" name="pessoa_id" required>
+                            <option value="">Selecione um responsável</option>
+                            {% for pessoa in pessoas %}
+                            <option value="{{ pessoa.id }}">{{ pessoa.nome }} ({{ pessoa.secretaria }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="data_prazo" class="form-label">Data Prazo</label>
+                        <input type="date" class="form-control" id="data_prazo" name="data_prazo" 
+                               value="{{ hoje }}">
+                        <div class="form-text">
+                            Data limite para conclusão da pendência.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição da Pendência*</label>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="5" required
+                                  placeholder="Descreva detalhadamente a pendência..."></textarea>
+                    </div>
+                    
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="enviar_whatsapp" name="enviar_whatsapp" checked>
+                        <label class="form-check-label" for="enviar_whatsapp">
+                            <i class="fab fa-whatsapp text-success me-1"></i>
+                            Enviar notificação via WhatsApp para o responsável
+                        </label>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Salvar Pendência
+                        </button>
+                        <a href="{{ url_for('consultar_pendencias') }}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Não há pessoas cadastradas para atribuir pendências. 
+                    <a href="{{ url_for('cadastrar_pessoa') }}" class="alert-link">Cadastre uma pessoa primeiro</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-info-circle me-2 text-primary"></i>Informações</h5>
+                <p>
+                    Cadastre uma nova pendência e atribua a um responsável.
+                    Você pode enviar uma notificação automática via WhatsApp.
+                </p>
+                <hr>
+                <h6><i class="fas fa-lightbulb me-2 text-warning"></i>Dicas:</h6>
+                <ul class="small">
+                    <li>Seja claro e específico na descrição da pendência</li>
+                    <li>Defina uma data de prazo realista</li>
+                    <li>Certifique-se que o responsável tem o WhatsApp cadastrado corretamente</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}  
