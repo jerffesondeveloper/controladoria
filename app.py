@@ -12,7 +12,8 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 app.config['FLASK_ENV'] = os.environ.get('FLASK_ENV', 'development')  # Padrão 'development'
-
+app.config['FLASK_ENV'] = os.environ.get('FLASK_ENV', 'development')
+ 
 print(f"Running in {app.config['FLASK_ENV']} mode")
 
 # Configurar o banco de dados
