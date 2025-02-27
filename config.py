@@ -9,7 +9,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'controladoriapm_secret_key')
     
     # Configuração do banco de dados
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///controladoriapm.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///instance/controladoriapm.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Credenciais fixas para login
