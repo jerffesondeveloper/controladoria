@@ -102,7 +102,7 @@ def create_pendencia_message(pendencia, tipo="nova"):
     if pendencia.data_prazo:
         message += f"\nPrazo: {format_date(pendencia.data_prazo)}\n"
     
-    message += "\nPor favor, não esqueça de solucionar essas pendências\n\nControladoriapm"
+    message += "\nPor favor, não esqueça de solucionar essas pendências\n\nControladoria Geral Pedra Mole/SE"
     return message
 
 # Configurar formatadores de template
